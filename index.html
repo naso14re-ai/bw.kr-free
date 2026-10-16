@@ -1,0 +1,398 @@
+
+<html lang="en"><head>
+	<meta name="viewport" content="width=device-width">
+	<meta name="description" content="The gorilla-based chat app. Anonymous anarchy chat website based on BonziBUDDY.">
+	<meta name="keywords" content="BonziWORLD, BonziBUDDY, Chat, Windows XP">
+	<title>BonziWORLD</title>
+	<meta charset="utf-8">
+	<meta name="mobile-web-app-capable" content="yes">
+
+	<link rel="stylesheet" type="text/css" href="./flex.css">
+	<link rel="stylesheet" type="text/css" href="./style.css">
+
+	<script type="module" src="https://ka-f.webawesome.com/webawesome@3.9.0/webawesome.loader.js"></script>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="./favicons/apple-touch-icon.png">
+	<link rel="icon" type="image/png" href="./favicons/favicon.png" sizes="32x32">
+	<link rel="icon" type="image/png" href="./favicons/favicon.png" sizes="16x16">
+	<link rel="manifest" href="./favicons/manifest.json">
+	<link rel="mask-icon" href="./favicons/safari-pinned-tab.svg" color="#5bbad5">
+	<link rel="shortcut icon" href="./favicons/favicon.png">
+	<meta name="msapplication-config" content="./favicons/browserconfig.xml">
+	<meta name="theme-color" content="#9370DB">
+	<meta property="og:title" content="BonziWORLD">
+	<meta property="og:description" content="The gorilla-based chat app.">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.6.0/css/all.min.css" crossorigin="anonymous">
+
+	<script defer="" src="./lib/jquery.min.js"></script>
+	<script defer="" src="./lib/seedrandom.min.js"></script>
+	<!-- Served by the installed Socket.IO server package so client and server protocols stay aligned. -->
+	<script defer="" src="/socket.io/socket.io.js"></script>
+	<script defer="" src="./lib/jquery.contextMenu.min.js"></script>
+
+	
+	
+	
+	<script>
+    (function() {
+        const canvas = document.getElementById('confettiCanvas');
+        if (!canvas) return;
+        
+        const ctx = canvas.getContext('2d');
+
+        const customHeight = 1500; 
+
+        canvas.width = window.innerWidth;
+        canvas.height = customHeight;
+
+        let imgLoaded = false;
+        const confettiImg = new Image();
+        confettiImg.src = 'img/confetti.png';
+        
+        confettiImg.onload = () => { imgLoaded = true; };
+
+        class ConfettiParticle {
+            constructor() {
+                this.size = 400;
+                this.reset();
+                this.y = Math.random() * -canvas.height; 
+            }
+
+            reset() {
+                this.x = Math.random() * (canvas.width - this.size);
+                this.y = -this.size; 
+                this.speedY = Math.random() * 5 + 5; 
+                this.speedX = Math.random() * 5 - 2;  
+            }
+
+            update() {
+                this.y += this.speedY;
+                this.x += this.speedX;
+
+                if (this.y > canvas.height) {
+                    this.reset();
+                }
+            }
+
+            draw() {
+                if (imgLoaded) {
+                    ctx.drawImage(confettiImg, this.x, this.y, this.size, this.size);
+                } else {
+                    ctx.fillStyle = 'red';
+                    ctx.fillRect(this.x, this.y, this.size, this.size);
+                }
+            }
+        }
+
+        const particles = [];
+        const maxParticles = 25; 
+
+        for (let i = 0; i < maxParticles; i++) {
+            particles.push(new ConfettiParticle());
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            particles.forEach(particle => {
+                particle.update();
+                particle.draw();
+            });
+
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = customHeight; 
+        });
+    })();
+</script>
+
+	<script defer="" src="./bonziData.js"></script>
+	<script defer="" src="./script.js?v=1.01"></script>
+	<script defer="" src="./BonziCPU.js"></script>
+
+	<style id="customStyle"></style>
+</head>
+<body>
+
+<meta name="trustpilot-one-time-domain-verification-id" content="736a38c8-7e97-4aa5-8447-9abf06332328"/>
+
+
+	<div id="preload" hidden="">
+		<img src="./img/desktop/window_header.png">
+		<img src="./img/desktop/window_border.png">
+		<img src="./img/desktop/start_menu.png">
+		<img src="./img/desktop/close.png">
+		<img src="./img/misc/explosion.png">
+		<img src="./img/bonzi/purple.webp">
+		<img src="./img/bonzi/brown.webp">
+		<img src="./img/bonzi/yellow.webp">
+		<img src="./img/bonzi/cyan.webp">
+		<img src="./img/bonzi/pink.webp">
+		<img src="./img/bonzi/black.webp">
+		<img src="./img/bonzi/red.webp">
+		<img src="./img/bonzi/gray.webp">
+		<img src="./img/bonzi/green.webp">
+		<img src="./img/bonzi/blue.webp">
+		<img src="./img/bonzi/orange.webp">
+		<audio src="./explosion.mp3"></audio>
+	</div>
+	<div id="content">
+		<div id="room_info">
+			<div>Users: <span id="usercount">0</span></div>
+			Room ID - <span id="room_id">???</span><br>
+			<span id="room_public">This room is public.</span>
+			<span id="room_private">This room is private.</span>
+			<span id="room_owner"><br>You are the owner of this room.</span>
+<br><br>
+<p style="font-size:12px">Come join our <a href="https://discord.gg/WtuPdnhghv" target="_blank">Discord Server!</a></p>
+		</div>
+		
+		<div id="talkcard" hidden=""></div>
+		<div id="chat_bar">
+			<div id="chat_send">send</div>
+			<div id="start_button">+</div>
+<input id="chat_message" type="text" placeholder="Enter a message | Type '/' to see commands." list="commands" maxlength="999999999999">
+
+<datalist id="commands">
+  <option value="/name" label="Change your name.">
+  <option value="/color" label="Change your color.">
+  <option value="/hat" label="Change your hat.">
+  <option value="/freepope" label="Become a Dunce.">
+  <option value="/speed" label="Change the speed of your voice.">
+  <option value="/pitch" label="Change the pitch of your voice.">
+  <option value="/backflip" label="Do a backflip">
+  <option value="/asshole" label="Call someone an asshole.">
+  <option value="/bass" label="Call someone a bass.">
+  <option value="/advpoll" label="Create a poll with a title.">
+  <option value="/bees" label="According to all known laws of aviation, there is no way a bee should be able to fly.">
+  <option value="/bosnia" label="I am from Bosnia, take me to America.">
+  <option value="/wtf" label="EDUCATIONAL PURPOSES ONLY">
+  <option value="/dvdbounce" label="Bounce the BonziDVB animation at a given speed.">
+  <option value="/french" label="France is being fixed">
+  <option value="/info" label="Show user information.">
+  <option value="/boom" label="Boom.">
+  <option value="/joke" label="Tell a horribly written joke.">
+  <option value="/fact" label="Tell a interesting fact.">
+  <option value="/triggered" label="The best copypasta.">
+  <option value="/linux" label="I'd just like to interject for a moment.">
+  <option value="/pawn" label="Hi, my name is BonziBUDDY, and this is my website.">
+  <option value="/vaporwave" label="AESTETHIC">
+  <option value="/unvaporwave" label="AESTETHIC IS KILL">
+  <option value="/frutiger" label="Enable Frutiger Aero.">
+	<!-- privileged commands added dynamically for king/admin/pope -->
+  <option value="/unfrutiger" label="Disable Frutiger Aero.">
+  <option value="/image" label="Post an image.">
+  <option value="/sticker" label="Post an sticker.">
+  <option value="/video" label="Post an video.">
+  <option value="/youtube" label="Post an YouTube video.">
+  <option value="/clear" label="Clears the chat log.">
+  <option value="/poll" label="Create a poll.">
+  <option value="/settings" label="Opens the Settings.">
+  <option value="/rickroll" label="Send a link to epically troll users.">
+</datalist>
+			<div id="chat_tray">
+				<div id="btn_tile" class="tray_btn"></div>
+			</div>
+		</div>
+
+
+		<div id="page_login" class="page">
+		<br>
+	<center>
+		<div id="login_apps"><a href="./download/chrome.zip"><img src="./img/app/chrome-web-store.png" width="210"></a><a href="https://docs.google.com/document/d/18CUd5aVcO5V3lQ0PsU-SdEbvk0rmMj09ZKERS1-Jyf4/"><img src="./img/app/StickyPSA.png" width="200"></a></div>
+	</center>
+			<main id="login_readme" style="display: block;">
+				Message from Onantis: i'm planning to retire bw, but not community, but i'll stay as dev. the retire will be 15 august until i will come back as 3 september, that's because i need to take a summer hiatus (break)<hr><gay-rainbow><b>Welcome to BonziWORLD!</b><br>The <del>worst</del> best place on the internet.</gay-rainbow><!-- TrustBox script -->
+<hr>
+				<a id="readme" href="readme.html" target="_blank">README</a>
+				<a id="thefuckibgbeta" href="https://beta.bonziworld.kr" target="_blank">Beta</a>
+												<a id="rules" href="rules.html" target="_blank">RULES</a>
+				<a href="changelog.html" target="_blank">Changelog</a>
+<a href="contact.html" target="_blank">Help & Support</a>
+
+<a href="https://www.trustpilot.com/review/bonziworld.kr" target="_blank">Trustpilot</a>
+<a href="bcpudocs.html"_blank">BonziCPU Docs</a>
+<a href="https://wiki.bonziworld.kr/" target="_blank">BonziPEDIA</a>
+
+<a href="https://albums.bonziworld.kr/" target="_blank">Albums</a>
+
+				<!-- <a href="extra" target="_blank">Extra</a> -->
+			</main> 
+			<main id="login_tips" style="display: none;">
+				<img src="./img/bonziuser_haha.png" width="20"><b>Tip:</b>
+				<hr>
+				<p id="tip"></p>
+			</main>
+<div id="login_social" class="no_selection">
+                    <a href="https://www.youtube.com/@RadicalGreenツ"><i class="fa-brands fa-youtube fa-2x"></i></a>&nbsp;&nbsp;<a href="https://discord.gg/WtuPdnhghv"><i class="fa-brands fa-discord fa-2x"></i></a>&nbsp;&nbsp;<a href="https://instagram.com/bonziworld.kr"><i class="fa-brands fa-instagram fa-2x"></i></a>&nbsp;&nbsp;<a href="https://threads.com/@bonziworld.kr"><i class="fa-brands fa-threads fa-2x"></i></a>&nbsp;&nbsp;<a href="https://www.reddit.com/r/bonziworldkr/"><i class="fa-brands fa-reddit fa-2x"></i></a>
+                </div>
+			<div id="login_card" style="display: none;">
+				<input id="login_name" type="text" placeholder="Nickname" maxlength="25">
+				<input id="login_room" type="text" placeholder="Room ID (safer)">
+				<div id="login_go"></div>
+				<div id="login_error" hidden=""></div>
+			</div>
+			<div id="login_load">loading...</div>
+			<div id="login_version">Version 1.8.3</div>
+		</div>
+
+<script>
+        const tips = [
+            "This is the official BonziWORLD server. If you see another one, it's unofficial.",
+            "Don't like BonziTV? Do /settings and enable 'Disable Background YouTube'.",
+            "All admins/popes should have atleast a Crown or a Gavel icon on their username. If they don't have one, they are probably a fake admin/pope.",
+            "Is your laptop/computer a potato? Do /settings and go to 'Performance' to make BonziWORLD faster!",
+            "If another BonziWORLD Server is being promoted, do not join it, as it's probably garbage."
+        ];
+
+        const randomIndex = Math.floor(Math.random() * tips.length);
+        document.getElementById("tip").innerText = tips[randomIndex];
+    </script>
+
+<script>
+        const cursors = [
+            'stopwatch', 
+            'handwait', 
+            'whatever', 
+            'hourglas', 
+            'banana', 
+            'dinosaur', 
+            'horse', 
+            'drums', 
+            'piano'
+        ];
+
+        const randomCursor = cursors[Math.floor(Math.random() * cursors.length)];
+
+        const imgElement = document.getElementById('cursorImage');
+        imgElement.src = `./img/cursors/${randomCursor}.gif`;
+    </script>
+
+		<div id="page_error" class="page" hidden>
+			<div id="error_cont" class="message_cont">
+				<img src="./img/error/logo.png"><br>
+				<br>
+				<h1>BonziWORLD.exe has encountered an error and needs to close.</h1><br>
+				Nah, but seriously there was an error and you got disconnected from the server. Chances are, your internet just died out for a brief moment or your device went to sleep. Otherwise the server just screwed up.<br>
+				<br>
+				Try and reload the page. If that doesn't work and your internet is okay, then panic. We'll probably be back up Soon™ though.<br>
+				<br>
+				The server may have probably restarted. If it crashed, please mention RadicalGreen or another developer in our <a href="https://discord.gg/WtuPdnhghv">Discord Server.</a><br>
+				<br>
+				<button onclick="window.location.reload()">Reload?</button>
+			</div>
+		</div>
+
+		<canvas id="canvas"></canvas>
+
+		<div id="chat_log_button"></div>
+		
+		<div id="chat_log" class="window" hidden="">
+			<div class="window_header">
+				BonziLOG™
+				<button id="chat_log_mode_button" class="window_button" type="button">Kings/Popes</button>
+				<div id="chat_log_close" class="window_close"></div>
+			</div>
+			<div class="window_body">
+				<div id="chat_log_content"></div>
+				<div id="chat_log_rank_log" class="chat_log_rank_log" hidden></div>
+			</div>
+			<div id="chat_log_resize"></div>
+		</div>
+
+		<div id="start_menu" hidden="">
+			<div id="start_menu_pfp"></div>
+			<input id="start_menu_name" autocorrect="off" maxlength="25" value="Anonymous">
+			<div id="start_menu_body">
+				<div id="settings_button" class="start_menu_item">
+					<img class="start_menu_item_icon" src="/img/desktop/cp.webp">
+					<div class="start_menu_item_details">
+						<div class="start_menu_item_name">Settings</div>
+						<div class="start_menu_item_description">Configure your settings.</div>
+					</div>
+				</div>
+				<div id="image_button" class="start_menu_item">
+					<img class="start_menu_item_icon" src="/img/desktop/if.png">
+					<div class="start_menu_item_details">
+						<div class="start_menu_item_name">Upload an Image</div>
+						<div class="start_menu_item_description">Send an image into the chat.</div>
+					</div>
+				</div>
+				<div id="queue_button" class="start_menu_item" hidden="">
+    <img class="start_menu_item_icon" src="/img/desktop/upload_imagery.png">
+    <div class="start_menu_item_details">
+        <div class="start_menu_item_name">Media Queue</div>
+        <div class="start_menu_item_description">Review pending images and videos.</div>
+    </div>
+</div>
+				<div id="poll_button" class="start_menu_item">
+					<img class="start_menu_item_icon" src="/img/desktop/pl.png">
+					<div class="start_menu_item_details">
+						<div class="start_menu_item_name">Poll Creator</div>
+						<div class="start_menu_item_description">Vote on a poll.</div>
+					</div>
+				</div>
+					<div id="bonzicpu_button" class="start_menu_item">
+					<img class="start_menu_item_icon" src="/img/desktop/bcpu.png">
+					<div class="start_menu_item_details">
+						<div class="start_menu_item_name">BonziCPU (Beta)</div>
+						<div class="start_menu_item_description">Run a CPU code!</div>
+					</div>
+				</div>
+				<div id="gmes_button" class="start_menu_item">
+					<img class="start_menu_item_icon" src="/img/games.png">
+					<div class="start_menu_item_details">
+						<div class="start_menu_item_name">Games</div>
+						<div class="start_menu_item_description">Play some classic games. What else!</div>
+					</div>
+				</div>
+			</div>
+			<div id="start_menu_vault"></div>
+		</div>
+
+		<div id="page_ban" class="page" hidden="">
+			<div id="ban_cont" class="message_cont">
+				<img src="./img/ban/logo.png"><br>
+				<br>
+				<h1>You have been banned!</h1><br>
+				<br>
+				<b>Why though? </b><span id="ban_reason"></span><br>
+				<b>When will the ban expire? </b><span id="ban_end"></span><hr>Do you think we made a mistake? <a href="./contact.html">Contact us!</a>
+			</div>
+		</div>
+
+		<div id="page_mute" class="page" hidden>
+			<div id="mute_cont" class="message_cont">
+				<img src="./img/ban/logo.png"><br>
+				<br>
+				<h1>You got muted!</h1><br>
+				<br>
+				<b>Why? </b><span id="mute_reason"></span><br>
+				<b>When is it over? </b><span id="mute_end"></span><br>
+				<br>
+				<button id="mute_close">Close</button>
+			</div>
+		</div>
+
+		<div id="page_kick" class="page" hidden="">
+			<div id="kick_cont" class="message_cont">
+				<img src="./img/ban/logo.png"><br>
+				<br>
+				<h1>You have been kicked!</h1><br>
+				<br>
+				<b>Why though? </b><span id="kick_reason"></span><br>
+				<br>
+				However, you can always rejoin, as this is just a kick! Don't piss off the admins next time...<hr>
+				<button onclick="window.location.reload()">Reload?</button>
+			</div>
+		</div>
+		<div id="tooltip" style="display:none"></div>
+	</div>
+
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"31de3e83039b4f1786fc2c7880bd88cd","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+</body></html>
